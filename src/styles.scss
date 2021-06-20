@@ -1,0 +1,23 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~bootstrap/scss/bootstrap';
+/* Importing Bootstrap SCSS file. */
+body, html{
+    padding: 0;
+    margin: 0;
+    height: 100%;
+}
+
+button{
+    width: 80px;
+}
+
+.rotate-90{
+    transform: rotate(90deg);
+}
+
+.icon{
+    height: 20px;
+}
+.cur-pointer{
+    cursor: pointer;
+}

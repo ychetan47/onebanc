@@ -1,0 +1,130 @@
+<div class="d-flex flex-column p-4">
+    <div *ngFor="let transaction of transactionsModel">
+        <div class="d-block text-center mb-4 font-weight-bold">{{transaction.transDate | date:'mediumDate'}}</div>
+        <div *ngFor="let trans of transaction.transactions" 
+            class="border col-sm-7 col-md-5 col-9 mb-3 p-3"
+            [ngClass]="{'ml-auto': trans.direction == Enums.Direction.Sent }">
+            <div class="d-flex align-items-center flex-wrap">
+                <div class="display-4">
+                    {{trans.amount | currency:'INR' }}
+                </div>
+                <div class="ml-auto">
+                    <p *ngIf="trans.direction == Enums.Direction.Sent">
+                        <span *ngIf="trans.type == Enums.Type.Collect">
+                            <span *ngIf="trans.status == Enums.Status.Pending">
+                                <img src="../assets/icons8-attach-24.png"
+                                class="mr-1 icon img-fluid rotate-90">You Requested
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Confirmed">
+                                <img src="../assets/icons8-tick-box-48.png">You Received
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Expired">
+                                Request Expired
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Reject">
+                                Request Rejected
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Cancel">
+                                Request Cancelled
+                            </span>
+                        </span>
+                        <span *ngIf="trans.type == Enums.Type.Pay">
+                            <span *ngIf="trans.status == Enums.Status.Pending">
+                                Payment Pending
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Confirmed">
+                                <img src="../assets/icons8-tick-box-48.png"
+                                style="height: 20px;" class="img-fluid mr-1">
+                                You Paid
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Expired">
+                                Payment Expired
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Reject">
+                                Payment Rejected
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Cancel">
+                                Payment Cancelled
+                            </span>
+                        </span>
+                    </p>
+                    <p *ngIf="trans.direction == Enums.Direction.Received">
+                        <span *ngIf="trans.type == Enums.Type.Collect">
+                            <span *ngIf="trans.status == Enums.Status.Pending">
+                                <img src="../assets/icons8-attach-24.png" class="img-fluid
+                                icon mr-1 rotate-90">Request Received
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Confirmed">
+                                You Sent
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Expired">
+                                Payment Expired
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Reject">
+                                You Rejected
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Cancel">
+                                You Cancelled
+                            </span>
+                        </span>
+                        <span *ngIf="trans.type == Enums.Type.Pay">
+                            <span *ngIf="trans.status == Enums.Status.Pending">
+                                Request Received
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Confirmed">
+                                <img src="../assets/icons8-tick-box-48.png"
+                                class="icon img-fluid mr-1">
+                                You Received
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Expired">
+                                Payment Expired
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Reject">
+                                Payment Rejected
+                            </span>
+                            <span *ngIf="trans.status == Enums.Status.Cancel">
+                                Payment Cancelled
+                            </span>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="mb-2">
+                <p class="mb-0">Transaction ID:</p>
+                <p class="mb-1">{{trans.id}}</p>
+            </div>
+            <div class="d-flex align-items-center">
+                <button class="btn btn-success mr-2" *ngIf="trans.status == Enums.Status.Pending && trans.direction == Enums.Direction.Received && trans.type == Enums.Type.Collect"
+                (click)="pay(trans)">
+                    Pay
+                </button>
+                <button class="btn btn-danger" *ngIf="trans.status == Enums.Status.Pending" (click)="cancel(trans)">
+                    <span *ngIf="trans.direction == Enums.Direction.Received">Decline</span>
+                    <span *ngIf="trans.direction == Enums.Direction.Sent">Cancel</span>
+                </button>
+                <img src="../assets/icons8-chevron-right-52.png" 
+                class="img-fluid icon ml-auto cur-pointer"
+                (click)="openSummary(summary, trans)">
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #summary>
+    <div class="modal-header">
+        Summary
+    </div>
+    <div class="modal-body">
+        <p class="m-0 p-0">Description: {{modalData.description}}</p>
+        <p class="m-0 p-0">Customer: {{modalData.customer.vPay}}</p>
+        <p class="m-0 p-0">Transaction Amount: {{modalData.amount | currency: 'INR'}}</p>
+        <p class="m-0 p-0">TransactionID: {{modalData.id}}</p>
+        <p class="m-0 p-0">Start Date: {{modalData.startDate | date:'medium'}}</p>
+        <p class="m-0 p-0">End Date: {{modalData.endDate | date:'medium'}}</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-warning" (click)="closeSummary()">
+            Close
+        </button>
+    </div>
+</ng-template>
